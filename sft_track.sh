@@ -22,9 +22,9 @@ aur_url="https://aur.archlinux.org/packages"
 UPDPKGSUMS=/bin/updpkgsums
 MAKEPKG=/bin/makepkg
 GIT=/bin/git
-if [[ ! -d "${UPDPKGSUMS}" ||
-      ! -d "${MAKEPKG}" ||
-      ! -d "${GIT}" ]]; then
+if [[ ! -x "${UPDPKGSUMS}" ||
+      ! -x "${MAKEPKG}" ||
+      ! -x "${GIT}" ]]; then
   echo "One or more tools required by this script are mising:" >&2
   echo "${UPDPKGSUMS}, ${MAKEPKG}, ${GIT}" >&2
   #exit 1
