@@ -92,13 +92,15 @@ if [[ ! -z "${pkg}" ]]; then
      echo "Error, git directory not found: ${GIT_AUR_PATH}/${pkg}" >&2
      exit 1
     fi
-    popd ${GIT_AUR_PATH}/${pkg}
-    sed -e "s/^\(pkgver=\).*/\1${newest_ver}/" PKGBUILD
+    pushd ${GIT_AUR_PATH}/${pkg}
+    sed -i "s/^\(pkgver=\).*/\1${newest_ver}/" PKGBUILD
     updpkgsums
-    makepkg --printscrinfo > .SRCINFO
-    makepkg
-    git commit -m"Updating package to v. ${newest_ver}" .
-    git push origin
+    ${MAKEPKG} --force --clean
+    ${MAKEPKG} --printsrcinfo  > .SRCINFO
+    echo === Commiting changes ===
+    echo cd "${GIT_AUR_PATH}/${pkg}"
+    echo 'git commit -m"Updating package to v. '${newest_ver}'" .'
+    echo git push origin
   fi
 fi
 
