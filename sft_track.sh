@@ -10,6 +10,7 @@
 #~   -v    Print the Version.
 #~
 #~ NOTE: AUR packages make use of RPMs.
+#~ Define env GIT_AUR_PATH with the path where the aur repos are located
 
 _VERSION=0.0.1
 FULL_NAME=$(basename $0)
