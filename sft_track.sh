@@ -42,6 +42,19 @@ track_pkg() {
   local latest_rpm_num_ver=$( echo ${latest_rpm_pkg%-*} |
                                 grep -oP "\d" |
                                 paste -sd '' )
+  # For cases where a release has multiple digits, like 1.37.15 vs a new
+  # release like 1.38.5, multiply 10*n to make comparison easier/right.
+  local len_aur_num_ver=${#aur_num_ver}
+  local len_latest_rpm_num_ver=${#latest_rpm_num_ver}
+  local diff_lens=$(( ${len_aur_num_ver} - ${len_latest_rpm_num_ver} ))
+  if [[ ${diff_lens}  -gt 0 ]]; then
+    diff_lens=$(( 10 ** ${diff_lens} ))
+    latest_rpm_num_ver=$(( ${latest_rpm_num_ver} * ${diff_lens} ))
+  else
+    diff_lens=$(( 10 ** ${diff_lens#-} ))
+    aur_num_ver=$(( ${aur_num_ver} * ${diff_lens} ))
+  fi
+  # Now compare both versions
   if [[ ${latest_rpm_num_ver} -gt ${aur_num_ver} ]]; then
     echo "${latest_rpm_pkg%-*}" | sed -e 's/^.*-//'
     return 1
@@ -84,6 +97,14 @@ while getopts chsuv arg; do
       ;;
    esac
 done
+
+
+# GIT_AUR_PATH
+if [[ -z ${GIT_AUR_PATH} ]]; then
+    echo "Warning: GIT_AUR_PATH env variable is not defined"
+else
+    echo "GIT_AUR_PATH: ${GIT_AUR_PATH}"
+fi
 
 if [[ ! -z "${pkg}" ]]; then
   newest_ver=$( track_pkg "${pkg}" "${flags}" )
