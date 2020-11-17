@@ -22,11 +22,10 @@ aur_url="https://aur.archlinux.org/packages"
 UPDPKGSUMS=/bin/updpkgsums
 MAKEPKG=/bin/makepkg
 GIT=/bin/git
-if [[ ! -d "${UPDPKGSUMS}" ||
-      ! -d "${MAKEPKG}" ||
-      ! -d "${GIT}" ]]; then
+if [[ ! -x "${MAKEPKG}" ||
+      ! -x "${GIT}" ]]; then
   echo "One or more tools required by this script are mising:" >&2
-  echo "${UPDPKGSUMS}, ${MAKEPKG}, ${GIT}" >&2
+  echo "${MAKEPKG}, ${GIT}" >&2
   #exit 1
 fi
 
@@ -84,6 +83,13 @@ while getopts chsuv arg; do
    esac
 done
 
+get_sha() {
+  source=${1}
+  curl -s ${source} |
+    sha256sum |
+    awk '{print $1}'
+}
+
 if [[ ! -z "${pkg}" ]]; then
   newest_ver=$( track_pkg "${pkg}" "${flags}" )
   if [[ -n ${newest_ver} ]]; then
@@ -92,13 +98,21 @@ if [[ ! -z "${pkg}" ]]; then
      echo "Error, git directory not found: ${GIT_AUR_PATH}/${pkg}" >&2
      exit 1
     fi
-    popd ${GIT_AUR_PATH}/${pkg}
-    sed -e "s/^\(pkgver=\).*/\1${newest_ver}/" PKGBUILD
-    updpkgsums
-    makepkg --printscrinfo > .SRCINFO
-    makepkg
-    git commit -m"Updating package to v. ${newest_ver}" .
-    git push origin
+    pushd ${GIT_AUR_PATH}/${pkg}
+
+    # Replace version
+    sed -i "s/^\(pkgver=\).*/\1${newest_ver}/" PKGBUILD
+
+    # Replace sha256sum
+    source PKGBUILD
+    new_sha=$(get_sha ${source})
+    sed -i "s/^\(sha256sums=\).*/\1('${new_sha}')/" PKGBUILD
+
+    makepkg --printsrcinfo | tee .SRCINFO
+    makepkg --clean --force
+    echo git commit -m"Updating package to v. ${newest_ver}" .
+    echo git push origin
+    echo rm -Rf ${tmp}
   fi
 fi
 
