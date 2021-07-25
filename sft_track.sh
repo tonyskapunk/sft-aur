@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Compare the versions of available sft packages vs AUR.
 # Tony G. <aur at tonyskapunk dot net>
 #
@@ -65,7 +65,7 @@ while getopts chsuv arg; do
       exit 0
       ;;
     c)
-      pkg="scaleft-client-tools"
+      pkg="scaleft-client-tools-bin"
       flags+="c"
       ;;
     u)
@@ -73,7 +73,7 @@ while getopts chsuv arg; do
       flags+="u"
       ;;
     s)
-      pkg="scaleft-server-tools"
+      pkg="scaleft-server-tools-bin"
       flags+="s"
       ;;
     v)
@@ -90,15 +90,18 @@ get_sha() {
     awk '{print $1}'
 }
 
+# AUR repo + pkg name
+REPO_DIR="${GIT_AUR_PATH}/${pkg}"
+
 if [[ ! -z "${pkg}" ]]; then
   newest_ver=$( track_pkg "${pkg}" "${flags}" )
   if [[ -n ${newest_ver} ]]; then
-    ls -ld "${GIT_AUR_PATH}/${pkg}"
-    if [[ ! -d "${GIT_AUR_PATH}/${pkg}" ]]; then
-     echo "Error, git directory not found: ${GIT_AUR_PATH}/${pkg}" >&2
+    ls -ld "${REPO_DIR}"
+    if [[ ! -d "${REPO_DIR}" ]]; then
+     echo "Error, git directory not found: ${REPO_DIR}" >&2
      exit 1
     fi
-    pushd ${GIT_AUR_PATH}/${pkg}
+    pushd ${REPO_DIR}
 
     # Replace version
     sed -i "s/^\(pkgver=\).*/\1${newest_ver}/" PKGBUILD

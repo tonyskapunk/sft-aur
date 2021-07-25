@@ -7,7 +7,7 @@ podman run \
   --name aur \
   --rm \
   --volume /opt/media/git:/git \
-  archlinux sleep 600
+  archlinux sleep 800
 
 # Install the required packages (root)
 podman exec \
@@ -16,6 +16,14 @@ podman exec \
   --interactive \
   aur \
   /bin/bash -c 'pacman -Sy && pacman --noconfirm -S git binutils fakeroot sudo python'
+
+# Update library packates due to conflicts (root)
+podman exec \
+  --user 0 \
+  --tty \
+  --interactive \
+  aur \
+  /bin/bash -c 'pacman -Sy && pacman --noconfirm -Su'
 
 # Update packages: client and server
 podman exec \
@@ -32,8 +40,9 @@ podman exec \
   --tty \
   --interactive \
   aur \
-  /bin/bash -c 'pacman -U $( ls /git/aur/scaleft-client-tools/scaleft-client-tools-*.zst |head -1 )'
+  /bin/bash -c 'pacman --noconfirm -U $( ls -t /git/aur/scaleft-client-tools-bin/scaleft-client-tools-*.zst |head -1 )'
 
+# Update URL
 podman exec \
   --user 1000:1000 \
   --tty \
