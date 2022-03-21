@@ -113,7 +113,7 @@ if [[ ! -z "${pkg}" ]]; then
 
     makepkg --printsrcinfo | tee .SRCINFO
     makepkg --clean --force
-    echo git commit -m"Updating package to v. ${newest_ver}" .
+    echo git commit -m\"Updating package to v. ${newest_ver}\" .
     echo git push origin
     echo rm -Rf ${tmp}
   fi

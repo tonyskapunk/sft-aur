@@ -7,7 +7,7 @@ podman run \
   --name aur \
   --rm \
   --volume /opt/media/git:/git \
-  archlinux sleep 800
+  docker.io/library/archlinux sleep 800
 
 # Install the required packages (root)
 podman exec \
