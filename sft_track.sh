@@ -34,7 +34,7 @@ track_pkg() {
   local pkg=$1
   local flags=$2
   local latest_rpm_pkg=$( ./sft_ver.sh ${flags} )
-  local aur_pkg=$( curl -s ${aur_url}/${pkg}/ | grep -Po "${pkg} [\d+.-]+" )
+  local aur_pkg=$( curl -sL ${aur_url}/${pkg}/ | grep -Po "${pkg} [\d+.-]+" )
   # Getting versions(as one single number)
   local aur_num_ver=$( echo ${aur_pkg%-*} | grep -oP "\d" | paste -sd '' )
   local latest_rpm_num_ver=$( echo ${latest_rpm_pkg%-*} |

@@ -17,7 +17,7 @@ podman exec \
   aur \
   /bin/bash -c 'pacman -Sy && pacman --noconfirm -S git binutils fakeroot sudo python'
 
-# Update library packates due to conflicts (root)
+# Update library packages due to conflicts (root)
 podman exec \
   --user 0 \
   --tty \

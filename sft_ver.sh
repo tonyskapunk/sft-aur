@@ -26,7 +26,7 @@ sft_server=scaleft-server-tools
 # Latest clients
 get_latest_rpm_client() {
   local latest_pkg=$( curl -s ${sft_repo}/rpm/ 2>/dev/null |
-                        grep -Po "${sft_client}[\w-\d.]*" |
+                        grep -Po "${sft_client}[\w\d.-]*" |
                         sort -V |
                         tail -1
                     )
@@ -36,7 +36,7 @@ get_latest_rpm_client() {
 get_latest_deb_client() {
   local deb_pkg=pool/linux/main/s/${sft_client}
   local latest_pkg=$( curl -s ${sft_repo}/deb/${deb_pkg}/ 2>/dev/null |
-                        grep -Po 'scale[\w-\d.]*' |
+                        grep -Po 'scale[\w\d.-]*' |
                         sort -V |
                         tail -1
                     )
@@ -47,7 +47,7 @@ get_latest_deb_client() {
 # Latest handlers
 get_latest_rpm_handler() {
   local latest_pkg=$( curl -s ${sft_repo}/rpm/ 2>/dev/null |
-                        grep -Po "${sft_handler}[\w-\d.]*" |
+                        grep -Po "${sft_handler}[\w\d.-]*" |
                         sort -V |
                         tail -1
               )
@@ -57,7 +57,7 @@ get_latest_rpm_handler() {
 get_latest_deb_handler() {
   local deb_pkg=pool/linux/main/s/${sft_handler}
   local latest_pkg=$( curl -s ${sft_repo}/deb/${deb_pkg}/ 2>/dev/null |
-                        grep -Po 'scale[\w-\d.]*' |
+                        grep -Po 'scale[\w\d.-]*' |
                         sort -V |
                         tail -1
                     )
@@ -68,7 +68,7 @@ get_latest_deb_handler() {
 # Latest server
 get_latest_rpm_server() {
   local latest_pkg=$( curl -s ${sft_repo}/rpm/ |
-                        grep -Po "${sft_server}[\w-\d.]*" 2>/dev/null |
+                        grep -Po "${sft_server}[\w\d.-]*" 2>/dev/null |
                         sort -V |
                         tail -1
               )
@@ -78,7 +78,7 @@ get_latest_rpm_server() {
 get_latest_deb_server() {
   local deb_pkg=pool/linux/main/s/${sft_server}
   local latest_pkg=$( curl -s ${sft_repo}/deb/${deb_pkg}/ 2>/dev/null |
-                        grep -Po 'scale[\w-\d.]*' |
+                        grep -Po 'scale[\w\d.-]*' |
                         sort -V |
                         tail -1
               )
