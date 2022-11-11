@@ -9,21 +9,13 @@ podman run \
   --volume /opt/media/git:/git \
   docker.io/library/archlinux sleep 800
 
-# Install the required packages (root)
+# Update library packages and install required packages (root)
 podman exec \
   --user 0 \
   --tty \
   --interactive \
   aur \
-  /bin/bash -c 'pacman -Sy && pacman --noconfirm -S git binutils fakeroot sudo python'
-
-# Update library packages due to conflicts (root)
-podman exec \
-  --user 0 \
-  --tty \
-  --interactive \
-  aur \
-  /bin/bash -c 'pacman -Sy && pacman --noconfirm -Su'
+  /bin/bash -c 'pacman -Sy && pacman --noconfirm -Su && pacman --noconfirm -S git binutils fakeroot sudo python'
 
 # Update packages: client and server
 podman exec \
