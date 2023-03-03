@@ -2,6 +2,7 @@
 
 # Spin up a build container
 podman run \
+  --pull always \
   --userns keep-id \
   --detach \
   --name aur \
