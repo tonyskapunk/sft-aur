@@ -16,7 +16,7 @@ podman exec \
   --tty \
   --interactive \
   aur \
-  /bin/bash -c 'pacman -Sy && pacman --noconfirm -Su && pacman --noconfirm -S git binutils fakeroot sudo python'
+  /bin/bash -c 'pacman -Sy && pacman --noconfirm -Su && pacman --noconfirm -S git binutils fakeroot sudo python debugedit'
 
 # Update packages: client and server
 podman exec \
